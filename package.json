@@ -1,0 +1,14 @@
+{
+  "name": "mh-item-links",
+  "version": "1.2.7",
+  "description": "",
+  "main": "mh-item-links.user.js",
+  "scripts": {
+    "lint": "npx eslint *.js -c .eslintrc.json"
+  },
+  "author": "Brad Parbs <brad@bradparbs.com> (https://bradparbs.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "eslint": "^8.16.0"
+  }
+}
