@@ -10,5 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "eslint": "^8.16.0"
+  },
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^12.9.0"
   }
 }
