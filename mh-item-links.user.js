@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.2.9
+// @version      1.2.10
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -11,34 +11,61 @@
 // @run-at       document-end
 // ==/UserScript==
 
-((function () {
+(function () {
 	'use strict';
 
 	/**
-	 * Add styles to the page for our added elements.
+	 * Add styles to the page.
+	 *
+	 * @param {string} styles The styles to add.
 	 */
-	const addStyles = () => {
-		const style = document.createElement('style');
-		style.innerHTML = `
-			.mh-item-info-text {
-				margin-left: 10px;
-				margin-right: 10px;
-				font-size: 12px !important;
-				font-weight: 300 !important;
-			}
-			.mh-item-info-text-item-popup {
-				padding-top: 2px;
-				text-align: right;
-			}
-			.mhItemLinks {
-				margin-left: 5px;
-			}
-			.mhItemLinks span {
-				font-weight: normal;
-				font-size: 11px;
-			}`;
+	const addStyles = (styles) => {
+		const existingStyles = document.getElementById('mh-mouseplace-custom-styles');
 
-		document.head.appendChild(style);
+		if (existingStyles) {
+			existingStyles.innerHTML += styles;
+		} else {
+			const style = document.createElement('style');
+			style.id = 'mh-mouseplace-custom-styles';
+
+			style.innerHTML = styles;
+			document.head.appendChild(style);
+		}
+	};
+
+	/**
+	 * Do something when ajax requests are completed.
+	 *
+	 * @param {Function} callback    The callback to call when an ajax request is completed.
+	 * @param {string}   url         The url to match. If not provided, all ajax requests will be matched.
+	 * @param {boolean}  skipSuccess Skip the success check.
+	 */
+	const onAjaxRequest = (callback, url = null, skipSuccess = false) => {
+		const req = XMLHttpRequest.prototype.open;
+		XMLHttpRequest.prototype.open = function () {
+			this.addEventListener('load', function () {
+				if (this.responseText) {
+					let response = {};
+					try {
+						response = JSON.parse(this.responseText);
+					} catch (e) {
+						return;
+					}
+
+					if (response.success || skipSuccess) {
+						if (! url) {
+							callback(this);
+							return;
+						}
+
+						if (this.responseURL.indexOf(url) !== -1) {
+							callback(this);
+						}
+					}
+				}
+			});
+			req.apply(this, arguments);
+		};
 	};
 
 	/**
@@ -202,26 +229,37 @@
 		}
 	};
 
-	/**
-	 * On ajax refresh, add the links if needed.
-	 */
-	const ajaxFinished = XMLHttpRequest.prototype.open;
-	XMLHttpRequest.prototype.open = function () {
-		this.addEventListener('load', function () {
-			if (this.responseURL.indexOf('managers/ajax/users/marketplace.php') !== -1) {
-				addMarketplaceLinks();
-			} else if (this.responseURL.indexOf('managers/ajax/users/userInventory.php') !== -1) {
-				addItemPopupLinks();
-			}
-		});
-		ajaxFinished.apply(this, arguments);
-	};
-
-	addStyles();
 	fixItemQtyBug();
+
+	addStyles(`
+	.mh-item-info-text {
+		margin-left: 10px;
+		margin-right: 10px;
+		font-size: 12px !important;
+		font-weight: 300 !important;
+	}
+	.mh-item-info-text-item-popup {
+		padding-top: 2px;
+		text-align: right;
+	}
+	.mhItemLinks {
+		margin-left: 5px;
+	}
+	.mhItemLinks span {
+		font-weight: normal;
+		font-size: 11px;
+	}`);
+
+	onAjaxRequest((request) => {
+		if (request.responseURL.indexOf('managers/ajax/users/marketplace.php') !== -1) {
+			addMarketplaceLinks();
+		} else if (request.responseURL.indexOf('managers/ajax/users/userInventory.php') !== -1) {
+			addItemPopupLinks();
+		}
+	}, null, true);
 
 	// if we're on an item page, add the links.
 	if (window.location.href.indexOf('item.php') !== -1) {
 		addItemPopupLinks();
 	}
-})());
+}());
