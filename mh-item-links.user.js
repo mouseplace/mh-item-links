@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.2.10
+// @version      1.3.0
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -69,6 +69,37 @@
 	};
 
 	/**
+	 * Do something when the overlay is shown or hidden.
+	 *
+	 * @param {Object}   callbacks
+	 * @param {Function} callbacks.show   The callback to call when the overlay is shown.
+	 * @param {Function} callbacks.hide   The callback to call when the overlay is hidden.
+	 * @param {Function} callbacks.change The callback to call when the overlay is changed.
+	 */
+	 const onOverlayChange = (callbacks) => {
+		const observer = new MutationObserver(() => {
+			if (callbacks.change) {
+				callbacks.change();
+			}
+
+			if (document.getElementById('overlayBg').classList.length > 0) {
+				if (callbacks.show) {
+					callbacks.show();
+				}
+			} else if (callbacks.hide) {
+				callbacks.hide();
+			}
+		});
+		observer.observe(
+			document.getElementById('overlayBg'),
+			{
+				attributes: true,
+				attributeFilter: ['class']
+			}
+		);
+	};
+
+	/**
 	 * Return an anchor element with the given text and href.
 	 *
 	 * @param {string} text Text to use for link.
@@ -78,7 +109,7 @@
 	 */
 	const makeLink = (text, href) => {
 		href = href.replace(/\s/g, '_');
-		return `<a href="${ href }" class="mousehuntActionButton tiny mhItemLinks"><span>${ text }</span></a>`;
+		return `<a href="${ href }" class="mousehuntActionButton tiny mh-item-links"><span>${ text }</span></a>`;
 	};
 
 	/**
@@ -242,12 +273,23 @@
 		padding-top: 2px;
 		text-align: right;
 	}
-	.mhItemLinks {
+	.mh-item-links {
 		margin-left: 5px;
 	}
-	.mhItemLinks span {
+	.mh-item-links span {
 		font-weight: normal;
 		font-size: 11px;
+	}
+
+	.mh-item-links-map {
+		padding-bottom: 5px;
+	}
+
+	.mh-item-links-map a {
+		margin: 10px 10px 10px 0;
+	}
+	.mh-item-links-map .mousehuntActionButton.tiny {
+		margin: 3px;
 	}`);
 
 	onAjaxRequest((request) => {
