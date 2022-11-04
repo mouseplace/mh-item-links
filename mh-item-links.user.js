@@ -69,37 +69,6 @@
 	};
 
 	/**
-	 * Do something when the overlay is shown or hidden.
-	 *
-	 * @param {Object}   callbacks
-	 * @param {Function} callbacks.show   The callback to call when the overlay is shown.
-	 * @param {Function} callbacks.hide   The callback to call when the overlay is hidden.
-	 * @param {Function} callbacks.change The callback to call when the overlay is changed.
-	 */
-	 const onOverlayChange = (callbacks) => {
-		const observer = new MutationObserver(() => {
-			if (callbacks.change) {
-				callbacks.change();
-			}
-
-			if (document.getElementById('overlayBg').classList.length > 0) {
-				if (callbacks.show) {
-					callbacks.show();
-				}
-			} else if (callbacks.hide) {
-				callbacks.hide();
-			}
-		});
-		observer.observe(
-			document.getElementById('overlayBg'),
-			{
-				attributes: true,
-				attributeFilter: ['class']
-			}
-		);
-	};
-
-	/**
 	 * Return an anchor element with the given text and href.
 	 *
 	 * @param {string} text Text to use for link.
