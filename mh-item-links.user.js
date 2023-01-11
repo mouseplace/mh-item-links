@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.3.1
+// @version      1.3.2
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -155,7 +155,7 @@
 
 		if (args.child) {
 			const child = document.querySelector(args.child);
-			if (child) {
+			if (child && args.content) {
 				return append.insertBefore(args.content, child);
 			}
 		} else {
