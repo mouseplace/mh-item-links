@@ -11,7 +11,7 @@
 // @run-at       document-end
 // ==/UserScript==
 
-(function () {
+((function () {
 	'use strict';
 
 	/**
@@ -273,4 +273,4 @@
 	if (window.location.href.indexOf('item.php') !== -1) {
 		addItemPopupLinks();
 	}
-}());
+})());
