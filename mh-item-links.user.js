@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.0
+// @version      1.4.1
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
