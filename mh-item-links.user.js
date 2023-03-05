@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.2
+// @version      1.4.3
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -202,6 +202,10 @@
 	}`);
 
 	onAjaxRequest((request) => {
+		if (! request.responseURL) {
+			return;
+		}
+
 		if (request.responseURL.indexOf('managers/ajax/users/marketplace.php') !== -1) {
 			addMarketplaceLinks();
 		} else if (request.responseURL.indexOf('managers/ajax/users/userInventory.php') !== -1) {
