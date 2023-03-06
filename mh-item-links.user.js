@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.4
+// @version      1.4.5
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -9,11 +9,77 @@
 // @icon         https://brrad.com/mouse.png
 // @grant        none
 // @run-at       document-end
-// @require      https://cdn.jsdelivr.net/npm/mousehunt-utils@1.2.0/mousehunt-utils.js
 // ==/UserScript==
 
 ((function () {
 	'use strict';
+
+	/**
+	 * Add styles to the page.
+	 *
+	 * @param {string} styles The styles to add.
+	 */
+	const addStyles = (styles) => {
+		const existingStyles = document.getElementById('mh-mouseplace-custom-styles');
+
+		if (existingStyles) {
+			existingStyles.innerHTML += styles;
+		} else {
+			const style = document.createElement('style');
+			style.id = 'mh-mouseplace-custom-styles';
+
+			style.innerHTML = styles;
+			document.head.appendChild(style);
+		}
+	};
+
+	/**
+	 * Do something when ajax requests are completed.
+	 *
+	 * @param {Function} callback    The callback to call when an ajax request is completed.
+	 * @param {string}   url         The url to match. If not provided, all ajax requests will be matched.
+	 * @param {boolean}  skipSuccess Skip the success check.
+	 */
+	const onAjaxRequest = (callback, url = null, skipSuccess = false) => {
+		const req = XMLHttpRequest.prototype.open;
+		XMLHttpRequest.prototype.open = function () {
+			this.addEventListener('load', function () {
+				if (this.responseText) {
+					let response = {};
+					try {
+						response = JSON.parse(this.responseText);
+					} catch (e) {
+						return;
+					}
+
+					if (response.success || skipSuccess) {
+						if (! url) {
+							callback(this);
+							return;
+						}
+
+						if (this.responseURL.indexOf(url) !== -1) {
+							callback(this);
+						}
+					}
+				}
+			});
+			req.apply(this, arguments);
+		};
+	};
+
+	/**
+	 * Return an anchor element with the given text and href.
+	 *
+	 * @param {string} text Text to use for link.
+	 * @param {string} href URL to link to.
+	 *
+	 * @return {string} HTML for link.
+	 */
+	const makeLink = (text, href) => {
+		href = href.replace(/\s/g, '_');
+		return `<a href="${ href }" class="mousehuntActionButton tiny mh-item-links"><span>${ text }</span></a>`;
+	};
 
 	/**
 	 * Return a node with links after grabbing the item ID and name from the page.
@@ -100,20 +166,6 @@
 	};
 
 	/**
-	 * Return an anchor element with the given text and href.
-	 *
-	 * @param {string} text Text to use for link.
-	 * @param {string} href URL to link to.
-	 *
-	 * @return {string} HTML for link.
-	 */
-	const makeLink = (text, href) => {
-		href = href.replace(/\s/g, '_');
-		return `<a href="${ href }" class="mousehuntActionButton tiny mh-item-links"><span>${ text }</span></a>`;
-	};
-
-
-	/**
 	 * Add links to the marketplace page for an item.
 	 */
 	const addMarketplaceLinks = () => {
@@ -182,19 +234,19 @@
 	addStyles(`
 	.mh-item-info-text {
 		display: inline-block;
+		margin-left: 10px;
 		margin-right: 10px;
 	}
 
 	.mh-item-info-text-item-popup {
-		text-align: right;
 		width: auto;
 		position: relative;
 		top: 12px;
 		right: 12px;
 		display: block;
 		margin: 0;
+		text-align: right;
 	}
-
 	.mh-item-links {
 		margin-left: 5px;
 	}
