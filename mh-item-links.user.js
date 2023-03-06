@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.3
+// @version      1.4.4
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -98,6 +98,20 @@
 
 		return false;
 	};
+
+	/**
+	 * Return an anchor element with the given text and href.
+	 *
+	 * @param {string} text Text to use for link.
+	 * @param {string} href URL to link to.
+	 *
+	 * @return {string} HTML for link.
+	 */
+	const makeLink = (text, href) => {
+		href = href.replace(/\s/g, '_');
+		return `<a href="${ href }" class="mousehuntActionButton tiny mh-item-links"><span>${ text }</span></a>`;
+	};
+
 
 	/**
 	 * Add links to the marketplace page for an item.
@@ -202,10 +216,6 @@
 	}`);
 
 	onAjaxRequest((request) => {
-		if (! request.responseURL) {
-			return;
-		}
-
 		if (request.responseURL.indexOf('managers/ajax/users/marketplace.php') !== -1) {
 			addMarketplaceLinks();
 		} else if (request.responseURL.indexOf('managers/ajax/users/userInventory.php') !== -1) {
