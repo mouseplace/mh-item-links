@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.5
+// @version      1.4.6
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -233,26 +233,27 @@
 
   addStyles(`.mh-item-info-text {
     display: inline-block;
-    margin-left: 10px;
     margin-right: 10px;
+    margin-left: 10px;
   }
 
   .mh-item-info-text-item-popup {
-    width: auto;
     position: relative;
     top: 12px;
     right: 12px;
     display: block;
+    width: auto;
     margin: 0;
     text-align: right;
   }
+
   .mh-item-links {
     margin-left: 5px;
   }
 
   .mh-item-links span {
-    font-weight: normal;
     font-size: 11px;
+    font-weight: 400;
   }
 
   .mh-item-links-map {
@@ -262,9 +263,11 @@
   .mh-item-links-map a {
     margin: 10px 10px 10px 0;
   }
+
   .mh-item-links-map .mousehuntActionButton.tiny {
     margin: 3px;
-  }`);
+  }
+  `);
 
   onAjaxRequest((request) => {
     if (request.responseURL.indexOf('managers/ajax/users/marketplace.php') !== -1) {
