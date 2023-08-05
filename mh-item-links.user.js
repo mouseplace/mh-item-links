@@ -205,7 +205,7 @@
     }
 
     // Grab the item ID.
-    const itemID = window.location.href.split('i.php?id=')[ 1 ];
+    const itemID = window.location.href.split('i.php?id=')[1];
     if (! itemID) {
       return;
     }
