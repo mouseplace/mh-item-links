@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.6
+// @version      1.4.7
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -131,7 +131,7 @@
     // Link to markethunt.
     const isTradable = document.querySelectorAll('.itemView-sidebar-checklistItem.checked');
     if (args.forceType === 'marketplace' || (isTradable && isTradable.length === 2)) {
-      newText.innerHTML += makeLink('Markethunt', `https://markethunt.vsong.ca/index.php?item_id=${itemID}`);
+      newText.innerHTML += makeLink('Markethunt', `https://markethunt.win/index.php?item_id=${itemID}`);
     }
 
     return newText;
