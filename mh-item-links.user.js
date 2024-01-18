@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         🐭️ MouseHunt - Item Links
-// @version      1.4.6
+// @version      1.5.0
 // @description  Add links to the MouseHunt wiki, MHCT looter, MHDB, and Markethunt for items.
 // @license      MIT
 // @author       bradp
@@ -9,6 +9,7 @@
 // @icon         https://i.mouse.rip/mouse.png
 // @grant        none
 // @run-at       document-end
+// @require      https://cdn.jsdelivr.net/npm/script-migration@1.1.1
 // ==/UserScript==
 
 ((function () {
@@ -281,4 +282,6 @@
   if (window.location.href.indexOf('item.php') !== -1) {
     addItemPopupLinks();
   }
+
+  migrateUserscript('🐭️ MouseHunt - Item Links', 'https://greasyfork.org/en/scripts/445920-mousehunt-item-links');
 })());
